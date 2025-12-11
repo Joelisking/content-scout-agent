@@ -1,5 +1,4 @@
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content
+import resend
 from app.core.config import settings
 from typing import Optional
 import logging
@@ -11,8 +10,8 @@ class EmailService:
     """Service for sending email notifications"""
 
     def __init__(self):
-        self.client = SendGridAPIClient(settings.SENDGRID_API_KEY)
-        self.from_email = Email(settings.FROM_EMAIL)
+        resend.api_key = settings.RESEND_API_KEY
+        self.from_email = settings.FROM_EMAIL
 
     async def send_welcome_email(self, to_email: str, user_name: str):
         """Send welcome email to new user"""
@@ -255,17 +254,18 @@ class EmailService:
     async def _send_email(
         self, to_email: str, subject: str, html_content: str
     ) -> bool:
-        """Internal method to send email via SendGrid"""
+        """Internal method to send email via Resend"""
         try:
-            message = Mail(
-                from_email=self.from_email,
-                to_emails=To(to_email),
-                subject=subject,
-                html_content=Content("text/html", html_content)
-            )
+            params: resend.Emails.SendParams = {
+                "from": self.from_email,
+                "to": [to_email],
+                "subject": subject,
+                "html": html_content,
+            }
 
-            response = self.client.send(message)
-            logger.info(f"Email sent to {to_email}: {response.status_code}")
+            response = resend.Emails.send(params)
+            email_id = getattr(response, 'id', 'success')
+            logger.info(f"Email sent to {to_email}: {email_id}")
             return True
 
         except Exception as e:

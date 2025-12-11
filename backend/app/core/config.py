@@ -21,11 +21,12 @@ class Settings(BaseSettings):
 
     # Claude AI
     ANTHROPIC_API_KEY: str
+    AI_MODEL: Optional[str] = None  # Optional, defaults to hardcoded model in service
 
     # Email
-    SENDGRID_API_KEY: str
-    FROM_EMAIL: str
-    ADMIN_EMAIL: str
+    RESEND_API_KEY: str = ""
+    FROM_EMAIL: str = "noreply@contentscout.com"
+    ADMIN_EMAIL: str = "admin@contentscout.com"
 
     # Payments
     STRIPE_SECRET_KEY: str
@@ -75,6 +76,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"  # Ignore extra environment variables
 
 
 settings = Settings()

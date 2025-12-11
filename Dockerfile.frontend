@@ -16,4 +16,4 @@ COPY frontend .
 EXPOSE 3000
 
 # Default command
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev"]

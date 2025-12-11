@@ -103,6 +103,14 @@ def generate_blog_task(self, job_id: int):
                 keywords=job.keywords_found,
                 tone=job.tone,
                 outline=outline,
+                custom_title=job.custom_title,
+                target_word_count=job.target_word_count,
+                writing_style=job.writing_style,
+                target_audience=job.target_audience,
+                content_depth=job.content_depth,
+                seo_focus=job.seo_focus,
+                include_sections=job.include_sections,
+                custom_instructions=job.custom_instructions,
             )
         )
 
@@ -135,15 +143,21 @@ def generate_blog_task(self, job_id: int):
             )
         )
 
-        pdf_path = asyncio.run(
-            storage_service.save_pdf(
-                user_id=user.id,
-                blog_id=blog.id,
-                title=blog.title,
-                content=blog.content,
-                summary=blog.summary,
+        # Try to save PDF, but don't fail the task if it fails
+        pdf_path = None
+        try:
+            pdf_path = asyncio.run(
+                storage_service.save_pdf(
+                    user_id=user.id,
+                    blog_id=blog.id,
+                    title=blog.title,
+                    content=blog.content,
+                    summary=blog.summary,
+                )
             )
-        )
+        except Exception as pdf_error:
+            logger.error(f"Failed to generate PDF for blog {blog.id}: {str(pdf_error)}")
+            # Continue without PDF - blog is still successful
 
         # Update blog with file paths
         blog.markdown_file_path = markdown_path

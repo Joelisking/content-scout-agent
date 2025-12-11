@@ -9,7 +9,7 @@ class BlogGenerationService:
 
     def __init__(self):
         self.client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.model = settings.AI_MODEL or "claude-3-5-sonnet-20241022"
 
     async def generate_blog(
         self,
@@ -19,6 +19,14 @@ class BlogGenerationService:
         keywords: List[str],
         tone: str = "professional",
         outline: Dict[str, Any] = None,
+        custom_title: str = None,
+        target_word_count: str = None,
+        writing_style: str = None,
+        target_audience: str = None,
+        content_depth: str = "moderate",
+        seo_focus: str = "medium",
+        include_sections: List[str] = None,
+        custom_instructions: str = None,
     ) -> Dict[str, str]:
         """
         Generate a comprehensive blog post using Claude AI
@@ -30,13 +38,34 @@ class BlogGenerationService:
             keywords: Target keywords to include
             tone: Writing tone (professional, casual, technical)
             outline: Optional blog outline
+            custom_title: Optional custom title
+            target_word_count: Target word count range
+            writing_style: Writing style preference
+            target_audience: Target audience description
+            content_depth: Content depth level
+            seo_focus: SEO optimization level
+            include_sections: List of sections to include
+            custom_instructions: Custom generation instructions
 
         Returns:
             Dictionary containing title, content, and summary
         """
         # Build the prompt for Claude
         prompt = self._build_blog_prompt(
-            sector, location, research_data, keywords, tone, outline
+            sector=sector,
+            location=location,
+            research_data=research_data,
+            keywords=keywords,
+            tone=tone,
+            outline=outline,
+            custom_title=custom_title,
+            target_word_count=target_word_count,
+            writing_style=writing_style,
+            target_audience=target_audience,
+            content_depth=content_depth,
+            seo_focus=seo_focus,
+            include_sections=include_sections,
+            custom_instructions=custom_instructions,
         )
 
         # Generate blog using Claude
@@ -72,6 +101,14 @@ class BlogGenerationService:
         keywords: List[str],
         tone: str,
         outline: Dict[str, Any] = None,
+        custom_title: str = None,
+        target_word_count: str = None,
+        writing_style: str = None,
+        target_audience: str = None,
+        content_depth: str = "moderate",
+        seo_focus: str = "medium",
+        include_sections: List[str] = None,
+        custom_instructions: str = None,
     ) -> str:
         """Build the prompt for Claude to generate the blog"""
 
@@ -82,6 +119,10 @@ class BlogGenerationService:
 
         keywords_text = ", ".join(keywords[:10])
 
+        # Determine word count target
+        word_count = target_word_count or "1200-1800"
+
+        # Build the prompt
         prompt = f"""You are a professional content writer specializing in {sector}. Write a comprehensive, engaging, and SEO-optimized blog post about {sector} in {location}.
 
 **Research Findings:**
@@ -91,12 +132,74 @@ class BlogGenerationService:
 {keywords_text}
 
 **Writing Style:**
-- Tone: {tone}
-- Length: 1200-1800 words
-- Include relevant statistics and insights
-- Make it engaging and actionable
-- Use proper headings (H1, H2, H3)
-- Include an introduction and conclusion
+- Tone: {tone}"""
+
+        if writing_style:
+            style_descriptions = {
+                "informative": "educational and fact-based, focusing on providing clear information",
+                "storytelling": "narrative-driven with anecdotes and real-world examples",
+                "how-to": "step-by-step instructional format with actionable guidance",
+                "listicle": "list-based format with clear, numbered or bulleted points",
+                "opinion": "thought-leadership style with strong perspectives and insights"
+            }
+            prompt += f"\n- Style: {writing_style} ({style_descriptions.get(writing_style, 'engaging and well-structured')})"
+
+        prompt += f"\n- Length: {word_count} words"
+
+        if target_audience:
+            prompt += f"\n- Target Audience: {target_audience}"
+
+        # Content depth guidance
+        depth_descriptions = {
+            "overview": "Provide a high-level overview focusing on key points and main concepts",
+            "moderate": "Include relevant statistics and insights with balanced detail",
+            "comprehensive": "Provide in-depth analysis with extensive data, examples, and thorough coverage of subtopics"
+        }
+        prompt += f"\n- Content Depth: {depth_descriptions.get(content_depth, depth_descriptions['moderate'])}"
+
+        # SEO focus guidance
+        seo_descriptions = {
+            "low": "Focus on natural, reader-friendly content with minimal SEO optimization",
+            "medium": "Balance SEO optimization with readability, using keywords naturally",
+            "high": "Heavily optimize for SEO with strategic keyword placement, meta-friendly structure, and search intent focus"
+        }
+        prompt += f"\n- SEO Focus: {seo_descriptions.get(seo_focus, seo_descriptions['medium'])}"
+
+        prompt += "\n- Make it engaging and actionable\n- Use proper headings (H1, H2, H3)\n- Include an introduction and conclusion"
+
+        # Include sections if specified
+        if include_sections and len(include_sections) > 0:
+            prompt += "\n\n**Required Sections to Include:**"
+            section_map = {
+                "case_studies": "Real-world case studies or examples",
+                "statistics": "Relevant statistics and data points",
+                "expert_quotes": "Expert quotes or industry insights",
+                "faqs": "Frequently Asked Questions section",
+                "call_to_action": "Strong call-to-action conclusion"
+            }
+            for section in include_sections:
+                section_desc = section_map.get(section, section.replace("_", " ").title())
+                prompt += f"\n- {section_desc}"
+
+        # Custom instructions
+        if custom_instructions:
+            prompt += f"\n\n**Additional Instructions:**\n{custom_instructions}"
+
+        # Format requirements
+        if custom_title:
+            prompt += f"""
+
+**Format Requirements:**
+Please structure your response EXACTLY as follows:
+
+TITLE: {custom_title}
+
+SUMMARY: [A 2-3 sentence summary of the blog post]
+
+CONTENT:
+[The full blog post in Markdown format with proper headings, paragraphs, and formatting]"""
+        else:
+            prompt += """
 
 **Format Requirements:**
 Please structure your response EXACTLY as follows:
@@ -106,7 +209,10 @@ TITLE: [Your compelling blog title here]
 SUMMARY: [A 2-3 sentence summary of the blog post]
 
 CONTENT:
-[The full blog post in Markdown format with proper headings, paragraphs, and formatting]
+[The full blog post in Markdown format with proper headings, paragraphs, and formatting]"""
+
+        # Additional guidelines
+        prompt += f"""
 
 **Additional Guidelines:**
 1. Start with a hook that grabs attention

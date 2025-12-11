@@ -91,7 +91,7 @@ class StorageService:
                 leading=14,
             ))
             styles.add(ParagraphStyle(
-                name='Title',
+                name='BlogTitle',
                 parent=styles['Heading1'],
                 fontSize=24,
                 alignment=TA_CENTER,
@@ -107,7 +107,7 @@ class StorageService:
             ))
 
             # Add title
-            elements.append(Paragraph(title, styles['Title']))
+            elements.append(Paragraph(title, styles['BlogTitle']))
             elements.append(Spacer(1, 12))
 
             # Add summary if provided

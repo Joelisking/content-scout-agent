@@ -32,8 +32,16 @@ async def create_research_job(
         user_id=current_user.id,
         sector=job_data.sector,
         location=job_data.location,
+        custom_title=job_data.custom_title,
+        target_word_count=job_data.target_word_count,
         additional_keywords=job_data.additional_keywords,
         tone=job_data.tone,
+        writing_style=job_data.writing_style,
+        target_audience=job_data.target_audience,
+        content_depth=job_data.content_depth,
+        seo_focus=job_data.seo_focus,
+        include_sections=job_data.include_sections,
+        custom_instructions=job_data.custom_instructions,
         status=JobStatus.PENDING,
     )
 

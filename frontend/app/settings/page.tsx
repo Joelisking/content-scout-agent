@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import { ArrowLeft, CreditCard } from 'lucide-react';
 
@@ -8,7 +10,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-dark-950 text-white p-8">
       <div className="max-w-4xl mx-auto">
-        <Link to="/dashboard" className="inline-flex items-center space-x-2 text-dark-300 hover:text-white mb-6">
+        <Link href="/dashboard" className="inline-flex items-center space-x-2 text-dark-300 hover:text-white mb-6">
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Dashboard</span>
         </Link>
@@ -35,7 +37,7 @@ export default function SettingsPage() {
               You are currently on the <span className="capitalize font-semibold">{user?.subscription_tier}</span> plan.
             </p>
             <Link
-              to="/pricing"
+              href="/pricing"
               className="gradient-primary px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition inline-block"
             >
               Upgrade Plan

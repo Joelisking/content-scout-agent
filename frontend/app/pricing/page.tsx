@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function PricingPage() {
@@ -50,13 +50,13 @@ function PricingCard({ name, price, features, cta, ctaLink, highlighted = false 
       <ul className="space-y-3 mb-8">
         {features.map((feature: string, i: number) => (
           <li key={i} className="flex items-center space-x-2">
-            <CheckCircle2 className="w-5 h-5 text-primary-500 flex-shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-primary-500 shrink-0" />
             <span className="text-dark-200">{feature}</span>
           </li>
         ))}
       </ul>
       <Link
-        to={ctaLink}
+        href={ctaLink}
         className={`block text-center px-6 py-3 rounded-lg font-semibold transition ${
           highlighted ? 'gradient-primary hover:opacity-90' : 'bg-dark-800 hover:bg-dark-700'
         }`}

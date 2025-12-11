@@ -1,11 +1,14 @@
+'use client';
+
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
 import { Sparkles, LogIn } from 'lucide-react';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const [formData, setFormData] = useState({
     email: '',
@@ -20,7 +23,7 @@ export default function LoginPage() {
     try {
       await login(formData);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.response?.data?.detail || 'Login failed');
     } finally {
@@ -32,7 +35,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-dark-950 text-white flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
+          <Link href="/" className="inline-flex items-center space-x-2 mb-6">
             <Sparkles className="w-10 h-10 text-primary-500" />
             <span className="text-2xl font-bold">Content Scout</span>
           </Link>
@@ -84,8 +87,8 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-dark-300">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-primary-500 hover:text-primary-400 font-semibold">
+              Don&apos;t have an account?{' '}
+              <Link href="/register" className="text-primary-500 hover:text-primary-400 font-semibold">
                 Sign up
               </Link>
             </p>

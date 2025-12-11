@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Sparkles, Target, Zap, Globe, CheckCircle2 } from 'lucide-react';
 
-export default function LandingPage() {
+export default function Home() {
   return (
     <div className="min-h-screen bg-dark-950 text-white">
       {/* Navigation */}
@@ -14,19 +14,19 @@ export default function LandingPage() {
             </div>
             <div className="flex items-center space-x-4">
               <Link
-                to="/pricing"
+                href="/pricing"
                 className="text-dark-300 hover:text-white transition"
               >
                 Pricing
               </Link>
               <Link
-                to="/login"
+                href="/login"
                 className="text-dark-300 hover:text-white transition"
               >
                 Login
               </Link>
               <Link
-                to="/register"
+                href="/register"
                 className="gradient-primary px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
               >
                 Get Started
@@ -49,7 +49,7 @@ export default function LandingPage() {
             for any industry and location with the power of AI.
           </p>
           <Link
-            to="/register"
+            href="/register"
             className="inline-flex items-center gradient-primary px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg shadow-primary-500/50"
           >
             Start Creating for Free
@@ -128,7 +128,7 @@ export default function LandingPage() {
             Join businesses already using Content Scout to dominate their niche.
           </p>
           <Link
-            to="/register"
+            href="/register"
             className="inline-flex items-center bg-white text-primary-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-dark-50 transition shadow-xl"
           >
             Get Started Now
