@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/authStore';
 import { jobsAPI, blogsAPI } from '@/lib/api';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import {
   Sparkles,
   Plus,

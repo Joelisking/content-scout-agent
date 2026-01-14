@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Sparkles, Target, Zap, Globe, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
@@ -25,12 +26,11 @@ export default function Home() {
               >
                 Login
               </Link>
-              <Link
-                href="/register"
-                className="gradient-primary px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
-              >
-                Get Started
-              </Link>
+              <Button asChild>
+                <Link href="/register">
+                  Get Started
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

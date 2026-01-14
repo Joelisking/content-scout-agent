@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { Sparkles, UserPlus } from 'lucide-react';
 
 const countries = [
